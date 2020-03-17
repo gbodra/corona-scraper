@@ -1,0 +1,15 @@
+{
+  "name": "corona-scraper",
+  "version": "1.0.0",
+  "description": "Busca informacoes no site do ministerio da saude sobre os casos de COVID-19",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "covid-19"
+  ],
+  "author": "Gustavo Bodra",
+  "license": "MIT",
+  "dependencies": {}
+}
