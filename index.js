@@ -1,4 +1,8 @@
 const http = require('http')
+const https = require('https')
+const querystring = require('querystring');
+require('dotenv').config()
+
 const options = {
 	hostname: 'plataforma.saude.gov.br',
 	port: 80,
@@ -35,6 +39,32 @@ const req = http.request(options, res => {
 		totalCases = isNaN(totalCases) ? 0 : totalCases;
 		totalSuspects = isNaN(totalSuspects) ? 0 : totalSuspects;
 		totalDeaths = isNaN(totalDeaths) ? 0 : totalDeaths;
+
+		const parameters = {
+			chat_id: process.env.CHAT_ID,
+			text: '[COVID-19]\nUltima atualizacao: ' + lastUpdate + '\nCasos: ' + totalCases + '\nSuspeitas: ' + totalSuspects + '\nMortes: ' + totalDeaths
+		}
+		const get_request_args = querystring.stringify(parameters);
+
+		const optionsTelegram = {
+			hostname: 'api.telegram.org',
+			port: 443,
+			path: '/bot' + process.env.TG_TOKEN + '/sendMessage?' + get_request_args,
+			method: 'GET'
+		}
+
+		const reqTelegram = https.request(optionsTelegram, resTelegram => {
+			resTelegram.on('end', () => {
+				console.log('Mensagem enviada!');
+			});
+		});
+
+		reqTelegram.on('error', error => {
+			console.error(error)
+		});
+
+		reqTelegram.end();
+
 		console.log('Ultima atualizacao: ' + lastUpdate);
 		console.log('Casos: ' + totalCases + '\nSuspeitas: ' + totalSuspects + '\nMortes: ' + totalDeaths);
 	});
@@ -44,4 +74,4 @@ req.on('error', error => {
 	console.error(error)
 });
 
-req.end()
+req.end();
